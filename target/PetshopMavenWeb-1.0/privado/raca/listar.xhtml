@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">  
+    <ui:composition template="/templates/template.xhtml">
+        <ui:define name="titulo">Manutenção de racas</ui:define>
+        <ui:define name="conteudo">
+            <h:form id="formListagem" prependId="false">
+                <p:growl/>
+                <p:commandButton value="Novo" actionListener="#{ControleRaca.novo()}" 
+                                 icon="pi pi-plus"
+                                 update="formEdicao"
+                                 process="@this"
+                                 oncomplete="PF('dlg').show();"/>
+                <div align="center">
+                    <p:panelGrid columns="11">
+                        <p:outputLabel value="Ordem:"/>
+                        <p:selectOneMenu value="#{ControleRaca.dao.ordemAtual}"
+                                         converter="#{ControleRaca.dao.converterOrdem}">
+                            <f:selectItems value="#{ControleRaca.dao.listaOrdem}"
+                                           var="ord" itemValue="#{ord.atributo}"/>
+                            <p:ajax update="listagem"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Filtro:"/>
+                        <p:inputText value="#{ControleRaca.dao.filtro}">
+
+                        </p:inputText>
+                        <p:commandButton value="Filtrar" update="listagem"/>
+                        <p:outputLabel value="Máximo de objetos"/>
+                        <p:selectOneMenu value="#{ControleRaca.dao.maximoObjetos}">
+                            <f:selectItem itemValue="3" itemLabel="3"/>
+                            <f:selectItem itemValue="5" itemLabel="5"/>
+                            <f:selectItem itemValue="10" itemLabel="10"/>
+                            <f:selectItem itemValue="20" itemLabel="20"/>
+                            <f:selectItem itemValue="50" itemLabel="50"/>
+                            <p:ajax update="listagem"/>
+                        </p:selectOneMenu>
+                        <p:commandButton action="#{ControleRaca.dao.primeiro()}"
+                                         title="Primeiro" update="listagem"
+                                         icon="pi pi-step-backward"/>
+                        <p:commandButton action="#{ControleRaca.dao.anterior()}"
+                                         title="Anterior" update="listagem"
+                                         icon="pi pi-chevron-left"/>  
+                        <p:commandButton action="#{ControleRaca.dao.proximo()}"
+                                         title="Proximo" update="listagem"
+                                         icon="pi pi-chevron-right"/>                         
+                        <p:commandButton action="#{controleCidade.dao.ultimo()}"
+                                         title="Ultimo" update="listagem"
+                                         icon="pi pi-step-forward"/>                        
+                    </p:panelGrid>
+                </div>   
+                <p:dataTable value="#{ControleRaca.dao.listaObjetos}" var="objeto"
+                             id="listagem">
+                    <f:facet name="footer">
+                        <p:outputLabel value="#{ControleRaca.dao.mensagemNavegacao}"/>
+                    </f:facet>
+                             
+                    <p:column headerText="ID">
+                        <p:outputLabel value="#{objeto.id}"/>
+                    </p:column>
+                    <p:column headerText="Nome">
+                        <p:outputLabel value="#{objeto.nome}"/>
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <div align="center">
+                            <p:commandButton actionListener="#{ControleRaca.alterar(objeto.id)}"
+                                             icon="pi pi-pencil" 
+                                             title="Editar"
+                                             update="formEdicao"
+                                             process="@this"
+                                             oncomplete="PF('dlg').show();"/>
+                            <p:commandButton actionListener="#{ControleRaca.excluir(objeto.id)}"
+                                             icon="pi pi-trash" 
+                                             update="@form"
+                                             process="@this"
+                                             onclick="if(!confirm('Confirma a exclusão')) return false"/>
+
+                        </div>
+                    </p:column>        
+
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Edição" widgetVar="dlg" resizable="false"
+                      modal="true" width="100%" height="100%">
+                <h:form id="formEdicao" prependId="false">
+                    <p:growl/>
+                    <div align="center">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="ID" />
+                            <p:inputText validator="#{ControleRaca.objeto.id}"
+                                         size="5" readonly="true"/>
+                            <p:outputLabel value="Nome" for="txtNome"/>
+                            <p:inputText id="txtNome" value="#{ControleRaca.objeto.nome}"
+                                             size="50" maxlength="50"
+                                             placeholder="Obrigatorio"/>              
+                        </p:panelGrid>
+                    </div>
+                    <p:panel>
+                        <div align="center">
+                            <p:commandButton actionListener="#{ControleRaca.salvar()}"
+                                             icon="pi pi-save" 
+                                             value="Salvar"
+                                             update="formEdicao formListagem"
+                                             oncomplete="if(!args.validationFailed){PF('dlg').hide();}"/>
+
+                        </div>
+
+                    </p:panel>   
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

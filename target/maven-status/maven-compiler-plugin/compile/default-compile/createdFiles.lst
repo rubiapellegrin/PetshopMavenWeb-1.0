@@ -1,0 +1,8 @@
+br\edu\ifsul\DAO\RacaDAO.class
+br\edu\ifsul\DAO\DAOGenerico.class
+br\edu\ifsul\controle\ControleProduto.class
+br\edu\ifsul\conversores\ConverterOrdem.class
+br\ifsul\edu\Util\Util.class
+br\edu\ifsul\DAO\ProdutoDAO.class
+br\edu\ifsul\DAO\Ordem.class
+br\edu\ifsul\controle\ControleRaca.class
